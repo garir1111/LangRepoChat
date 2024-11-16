@@ -1,0 +1,8 @@
+# 必須の設定
+CLONE_URL: "git@github.com:electron/electron.git" # クローンするリポジトリ
+BRANCH: "main" # ブランチの指定
+
+# オプションの設定
+FILTER_EXT: "md" # 複数の拡張子をカンマ区切りで指定（半角スペースも許容）
+DIR: "docs/api" # ディレクトリをカンマ区切りで指定
+LANG: "ja" # 言語設定（'ja' または 'en'）

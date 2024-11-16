@@ -1,0 +1,6 @@
+temp
+.env
+chatlog
+*.spec
+build
+dist
