@@ -90,18 +90,30 @@ async def initialize_app(page):
         branch=branch,
         repo_path=repo_path,
         file_filter=lambda file_path: (
-            (file_path.endswith(filter_ext) if filter_ext else True) and (any(directory in file_path for directory in dir) if dir else True)
+            (file_path.endswith(filter_ext) if filter_ext else True) and
+            (any(directory in file_path for directory in dir) if dir else True)
         ),
     )
 
-    global index
-    index = VectorstoreIndexCreator(
-        vectorstore_cls=Chroma,
-        embedding=embedding,
-    ).from_loaders([loader])
+    # ローダーでファイルを読み込み
+    docs = loader.load()
+    if not docs:
+        show_error_and_exit(page, "No documents found. Please check your config settings.")
+        return
 
-    page.clean()  # 読み込み画面をクリア
-    load_main_ui(page)  # メインUIを読み込む
+    # 埋め込みを生成
+    try:
+        VectorstoreIndexCreator(
+            vectorstore_cls=Chroma,
+            embedding=embedding,
+        ).from_documents(docs)
+    except Exception as e:
+        show_error_and_exit(page, f"Error creating index: {str(e)}")
+        return
+
+    # メインUIの読み込み
+    page.clean()
+    load_main_ui(page)
 
 
 def load_main_ui(page: ft.Page):
